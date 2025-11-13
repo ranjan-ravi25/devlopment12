@@ -16,7 +16,7 @@ module "virtual_network" {
 
 
 
-module "linux_virtual_machine" {
-  source = "../module/vmdev"
-  dev_vm = var.dev_vm
-}
+# module "linux_virtual_machine" {
+#   source = "../module/vmdev"
+#   dev_vm = var.dev_vm
+# }
