@@ -7,9 +7,15 @@ terraform {
   }
 
   backend "azurerm" {
+
+    resource_group_name  = "rg13"
+    storage_account_name = "stg1311"
+    container_name       = "cont13"
+
     resource_group_name  = "rgprovider5"
     storage_account_name = "stgprov"
     container_name       = "contprov1"
+
     key                  = "dev.terraform.tfstate"
   }
 }
