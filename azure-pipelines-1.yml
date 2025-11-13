@@ -1,0 +1,19 @@
+trigger: none
+
+pool: Env-agentpool
+
+steps:
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: 'latest'
+
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+    backendServiceArm: 'devconnection'
+    backendAzureRmResourceGroupName: 'rg13'
+    backendAzureRmStorageAccountName: 'stg1311'
+    backendAzureRmContainerName: 'cont13'
+    backendAzureRmKey: '"dev.terraform.tfstate"'
