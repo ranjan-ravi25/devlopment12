@@ -16,3 +16,10 @@ steps:
     backendAzureRmStorageAccountName: 'stg1311'
     backendAzureRmContainerName: 'cont13'
     backendAzureRmKey: 'dev.terraform.tfstate'
+
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+    environmentServiceNameAzureRM: 'raviconnection'
