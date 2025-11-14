@@ -24,7 +24,7 @@ stages:
         workingDirectory: $(work_direct)
         backendServiceArm: 'raviconnection'
         backendAzureRmResourceGroupName: 'rg13'
-        backendAzureRmStorageAccountName: 'stg1311'
+        backendAzureRmStorageAccountName: 'stg1511'
         backendAzureRmContainerName: 'cont13'
         backendAzureRmKey: 'prod.terraform.tfstate'
     - task: TerraformTask@5 # Terraform Validate
@@ -78,7 +78,7 @@ stages:
         workingDirectory: $(work_direct)
         backendServiceArm: 'raviconnection'
         backendAzureRmResourceGroupName: 'rg13'
-        backendAzureRmStorageAccountName: 'stg1311'
+        backendAzureRmStorageAccountName: 'stg1511'
         backendAzureRmContainerName: 'cont13'
         backendAzureRmKey: 'prod.terraform.tfstate'
     
