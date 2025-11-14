@@ -1,9 +1,16 @@
-trigger: none
+trigger:
+  branches:
+    include:
+      - main
+      - feature/*
 
 pool: Env-agentpool
 
+variables:
+ work_direct: '$(System.DefaultWorkingDirectory)/dev'
+
 stages:
-- stage: build # Satge1 
+- stage: builds # Stage1 
   displayName : Build of Terraform init validate and plan 
 
   jobs:
@@ -14,7 +21,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+        workingDirectory: $(work_direct)
         backendServiceArm: 'raviconnection'
         backendAzureRmResourceGroupName: 'rg13'
         backendAzureRmStorageAccountName: 'stg1311'
@@ -24,7 +31,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+        workingDirectory: $(work_direct)
 
   - job : plan
     displayName : Terraform plan 
@@ -34,14 +41,16 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+        workingDirectory: $(work_direct)
         environmentServiceNameAzureRM: 'raviconnection'
 
 - stage: Scanning # stage 2
   displayName : Code Scanning 
+  dependsOn: builds
   jobs:
   - job : scanning
     displayName : Scanning 
+    
     steps : 
     - task: tfsec@1 # Scanning 
       inputs:
@@ -66,18 +75,18 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+        workingDirectory: $(work_direct)
         backendServiceArm: 'raviconnection'
         backendAzureRmResourceGroupName: 'rg13'
         backendAzureRmStorageAccountName: 'stg1311'
         backendAzureRmContainerName: 'cont13'
         backendAzureRmKey: 'prod.terraform.tfstate'
     
-    - task: TerraformTask@5
+    - task: TerraformTask@5 # Terraform apply
       inputs:
         provider: 'azurerm'
         command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+        workingDirectory: $(work_direct)
         environmentServiceNameAzureRM: 'raviconnection'
 
 
