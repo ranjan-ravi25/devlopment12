@@ -3,7 +3,7 @@ trigger: none
 pool: Env-agentpool
 
 stages:
-- stage: build 
+- stage: build # Satge1 
   displayName : Build of Terraform init validate and plan 
 
   jobs:
@@ -37,21 +37,42 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
         environmentServiceNameAzureRM: 'raviconnection'
 
-- stage: Scanning 
+- stage: Scanning # stage 2
   displayName : Code Scanning 
   jobs:
   - job : scanning
     displayName : Scanning 
     steps : 
-    - task: tfsec@1
+    - task: tfsec@1 # Scanning 
       inputs:
         version: 'v1.26.0'
 
-- stage: deploy
-  displayName: deploy of resource
-  jobs :
+
+
+- stage: deploy # stage 3
+  jobs:
+  - job: manualvalidation
+    displayName: mv of code
+    pool: server
+    steps:
+    - task: ManualValidation@1 # manual validation
+      inputs:
+        notifyUsers: 'helloraviranjan99@gmail.com'
+        approvers: 'helloraviranjan99@gmail.com'
+
   - job : Terrafomapply 
-    steps : 
+    steps: 
+    - task: TerraformTask@5 # Terraform init 
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/dev'
+        backendServiceArm: 'raviconnection'
+        backendAzureRmResourceGroupName: 'rg13'
+        backendAzureRmStorageAccountName: 'stg1311'
+        backendAzureRmContainerName: 'cont13'
+        backendAzureRmKey: 'prod.terraform.tfstate'
+    
     - task: TerraformTask@5
       inputs:
         provider: 'azurerm'
