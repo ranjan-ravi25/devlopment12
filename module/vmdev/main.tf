@@ -11,23 +11,23 @@ data "azurerm_public_ip" "pipdata" {
   resource_group_name = each.value.resource_group_name
 }
 
-# data "azurerm_key_vault" "kv" {
-#   for_each            = var.dev_vm
-#   name                = each.value.key_vault_name
-#   resource_group_name = each.value.resource_group_name
-# }
+data "azurerm_key_vault" "kv" {
+  for_each            = var.dev_vm
+  name                = each.value.key_vault_name
+  resource_group_name = each.value.resource_group_name
+}
 
-# data "azurerm_key_vault_secret" "vmusername" {
-#   for_each     = var.dev_vm
-#   name         = "vmusername"
-#   key_vault_id = data.azurerm_key_vault.kv[each.key].id
-# }
+data "azurerm_key_vault_secret" "vmusername" {
+  for_each     = var.dev_vm
+  name         = "vmusername"
+  key_vault_id = data.azurerm_key_vault.kv[each.key].id
+}
 
-# data "azurerm_key_vault_secret" "vmpassword" {
-#   for_each     = var.dev_vm
-#   name         = "vmpassword"
-#   key_vault_id = data.azurerm_key_vault.kv[each.key].id
-# }
+data "azurerm_key_vault_secret" "vmpassword" {
+  for_each     = var.dev_vm
+  name         = "vmpassword"
+  key_vault_id = data.azurerm_key_vault.kv[each.key].id
+}
 
 
 
@@ -51,8 +51,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
   resource_group_name             = each.value.resource_group_name
   location                        = each.value.location
   size                            = each.value.vm_size
-  admin_username                  = "adminravi"#data.azurerm_key_vault_secret[each.key].vmusername
-  admin_password                  = "Rid@123$" #data.azurerm_key_vault_secret[each.key].vmpassword
+  admin_username                  = data.azurerm_key_vault_secret[each.key].vmusername
+  admin_password                  = data.azurerm_key_vault_secret[each.key].vmpassword
   disable_password_authentication = false
   network_interface_ids = [
     azurerm_network_interface.nic[each.key].id
